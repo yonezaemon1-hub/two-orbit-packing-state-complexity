@@ -1,0 +1,437 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Two-Orbit Packing for Exact State Complexity of Explicit Binary Consensus in Anonymous Dynamic Networks with Periodic Time},
+  pdfauthor={Ryutaro Yonezu}
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\finalzero}{\mathsf{final0}}
+\newcommand{\finalone}{\mathsf{final1}}
+\newcommand{\live}{\mathsf{L}}
+
+\title{\textbf{Two-Orbit Packing for Exact State Complexity\\of Explicit Binary Consensus in Anonymous Dynamic Networks\\with Periodic Time}}
+\author{Ryutaro Yonezu\\\small Independent Researcher}
+\date{September 5, 2026\\\small Version v1.0.0}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study deterministic binary consensus with explicit termination in anonymous synchronous $1$-interval-connected dynamic networks under one-bit broadcast-counting communication.  Each round $t$ exposes a free globally aligned phase $\phi_t=t\bmod P$, while the full round number is unavailable.  A recent state--phase analysis showed that when a dynamic-diameter bound $D$ is known but the network size is unknown, the minimum persistent-state count $S_D(D,P)$ lies between a lower bound of order $D/P$ and the block-counter upper bound $\lceil D/P\rceil+2$.
+
+We close this gap exactly.  The key is to pack the two opposite homogeneous executions simultaneously.  If $\tau_0$ and $\tau_1$ are the first final times on the static cycle $C_{2D}$, an adaptive split of the cycle implies $\tau_0+\tau_1\ge D$.  The pre-final phase-augmented trajectories of the all-zero and all-one executions are pairwise disjoint, and their two absorbing final states contribute a full period of $P$ augmented states each.  Hence
+\[
+P|Q|\ge \tau_0+\tau_1+2P\ge D+2P,
+\]
+which matches the known upper construction.  Therefore, for every $D,P\ge1$,
+\[
+\boxed{S_D(D,P)=\left\lceil\frac{D}{P}\right\rceil+2.}
+\]
+Equivalently, an $S$-state algorithm exists exactly when $P(S-2)\ge D$, and the minimum phase period compatible with $S\ge3$ persistent states is $\lceil D/(S-2)\rceil$.  In particular, the three-state threshold is exactly $P\ge D$.
+
+The same two-orbit argument also sharpens the known-size lower bound to
+\[
+S_n(n,P)\ge 2+\left\lceil\frac{\lfloor n/2\rfloor}{P}\right\rceil,
+\]
+while the existing upper bound remains $\lceil(n-1)/P\rceil+2$.  The claims are restricted to the stated anonymous dynamic-consensus model; no novelty is claimed for generic finite-state pumping or clock--memory tradeoffs.
+\end{abstract}
+
+\noindent\textbf{Keywords.} anonymous dynamic networks; binary consensus; explicit termination; state complexity; local memory; periodic clock; dynamic diameter; finite-state lower bounds; time--space tradeoff.
+
+\section{Introduction}
+
+Explicit termination turns elapsed time into a computational resource.  In anonymous dynamic networks, a binary value itself can be stabilized with one bit by monotone flooding, but a process that must irrevocably stop also needs evidence that information had enough time to propagate.  Yonezu~\cite{yonezu2026statephase} studied this cost when every node receives the free common phase
+\[
+\phi_t=t\bmod P
+\]
+but not the full round number.  For known dynamic diameter $D$ and unknown network size, that work proved
+\[
+\max\!\left\{3,\left\lceil\frac{\lceil D/2\rceil+1}{P}\right\rceil\right\}
+\le S_D(D,P)
+\le \left\lceil\frac{D}{P}\right\rceil+2,
+\]
+and obtained the asymptotic law $M_D(D,P)=\Theta(\log(2+D/P))$, where $M_D=\lceil\log_2 S_D\rceil$.
+
+The factor-two gap in the state lower bound came from forcing \emph{one} of the all-zero and all-one homogeneous executions to wait.  This note observes that the two executions can be packed together.  Two ingredients make the strengthening exact.
+
+First, the split-cycle argument can be made asymmetric.  Instead of bisecting $C_{2D}$ in advance, choose the block lengths after the two homogeneous first-final times $\tau_0,\tau_1$ are fixed.  This yields the sum constraint $\tau_0+\tau_1\ge D$.
+
+Second, opposite homogeneous executions cannot share a phase-augmented pre-final state: once they meet at the same pair $(q,\phi)$, deterministic homogeneous evolution has the same future, contradicting opposite unanimity outputs.  Moreover, each absorbing final state persists while the external phase cycles through all $P$ values.  Thus the two final states consume $2P$ augmented pairs in addition to the two disjoint pre-final trajectories.
+
+\paragraph{Main contributions.}
+\begin{enumerate}[leftmargin=1.5em]
+\item A two-orbit packing lemma that counts two disjoint homogeneous trajectories together with their absorbing phase cylinders.
+\item The exact known-diameter state complexity
+\[
+S_D(D,P)=\left\lceil D/P\right\rceil+2.
+\]
+\item The exact inverse feasibility law $P(S-2)\ge D$ and, consequently, the exact three-state threshold $P\ge D$.
+\item A stronger known-size lower bound
+\[
+S_n(n,P)\ge 2+\left\lceil\lfloor n/2\rfloor/P\right\rceil,
+\]
+improving the previous cycle bound by roughly a factor of two in the unsaturated regime.
+\end{enumerate}
+
+\section{Model}
+
+We use the model of~\cite{yonezu2026statephase}.  The node set $V$ is fixed, nodes are anonymous and deterministic, and time proceeds in synchronous propagation rounds.  In round $t$, the adversary chooses a simple undirected connected graph $G_{t+1}$.  Each node broadcasts one bit to all current neighbors and observes only the numbers $(c_0,c_1)$ of received zero and one broadcasts.
+
+The free external phase is
+\[
+\phi_t=t\bmod P\in\{0,\ldots,P-1\},
+\]
+globally aligned and execution-independent.  An algorithm has a finite persistent state set $Q$.  Broadcast and transition functions may inspect the phase, but the full round number is otherwise unavailable.
+
+Finality and output are properties of persistent state alone:
+\[
+F\subseteq Q,\qquad \mathrm{out}:Q\to\{0,1\}.
+\]
+Once a node enters a final state, its persistent state and output never change, although it remains present in communication.  The task requires termination, agreement, and unanimity validity.
+
+For completeness, we recall the dynamic-diameter convention used in~\cite{yonezu2026statephase}.  For a start time $s\ge0$ and source node $u$, let $R^s_0(u)=\{u\}$ and recursively define
+\[
+R^s_{r+1}(u)=R^s_r(u)\cup N_{G_{s+r+1}}(R^s_r(u)),
+\]
+where $N_G(A)$ denotes the set of vertices adjacent in $G$ to at least one vertex of $A$.  A graph sequence has dynamic diameter at most $D$ if $R^s_D(u)=V$ for every start time $s$ and every source $u$.  Thus, on a static connected graph, this notion reduces to ordinary graph diameter.
+
+For known $D$ and unknown $n$, $S_D(D,P)$ is the minimum $|Q|$ over algorithms that work for every network size and every graph sequence of dynamic diameter at most $D$.  For known $n$, $S_n(n,P)$ is defined analogously over all $n$-node $1$-interval-connected dynamic networks.
+
+\section{Homogeneous augmented orbits}
+
+Fix a static cycle $C_m$ and a deterministic period-$P$ algorithm.  In the homogeneous execution $E_b$, all nodes start with input $b\in\{0,1\}$.  By anonymity and cycle symmetry, all nodes have the same persistent state $q_t^{(b)}$ at every time $t$.  Let
+\[
+\tau_b=\min\{t:q_t^{(b)}\in F\}
+\]
+be the first final time, and define the augmented state
+\[
+X_t^{(b)}=(q_t^{(b)},\phi_t).
+\]
+On a homogeneous cycle there is a deterministic time-homogeneous map
+\[
+G:Q\times\{0,\ldots,P-1\}\to Q\times\{0,\ldots,P-1\}
+\]
+with $X_{t+1}^{(b)}=G(X_t^{(b)})$.
+
+\begin{lemma}[No pre-final repetition]
+For each $b\in\{0,1\}$, the augmented states
+\[
+X_0^{(b)},\ldots,X_{\tau_b-1}^{(b)}
+\]
+are pairwise distinct.
+\end{lemma}
+
+\begin{proof}
+If $X_i^{(b)}=X_j^{(b)}$ for $0\le i<j<\tau_b$, deterministic iteration of $G$ repeats the suffix from time $i$.  Since the execution eventually reaches a final state, the same final augmented state would then be reached earlier than $\tau_b$, a contradiction.
+\end{proof}
+
+\begin{lemma}[Opposite pre-final orbits are disjoint]
+The sets
+\[
+N_b=\{X_t^{(b)}:0\le t<\tau_b\}
+\]
+satisfy $N_0\cap N_1=\varnothing$.
+\end{lemma}
+
+\begin{proof}
+Suppose $X_i^{(0)}=X_j^{(1)}$ for some $i<\tau_0$ and $j<\tau_1$.  From that common augmented state onward, both homogeneous executions follow the same deterministic iterates of $G$.  Because the algorithm terminates, both suffixes eventually enter the same persistent final state and therefore have the same final output.  This contradicts unanimity validity, which requires output zero in $E_0$ and output one in $E_1$.
+\end{proof}
+
+Let $f_b=q_{\tau_b}^{(b)}$ be the persistent final state reached by $E_b$.  Unanimity validity implies $f_0\ne f_1$.  Since final states are persistent, after reaching $f_b$ the execution visits
+\[
+A_b=\{(f_b,\phi):\phi=0,\ldots,P-1\}
+\]
+as the external phase completes a full cycle.  Each $A_b$ has size $P$.
+
+\begin{lemma}[Two-orbit packing]
+For homogeneous opposite executions on a static cycle,
+\[
+P|Q|\ge \tau_0+\tau_1+2P.
+\]
+\end{lemma}
+
+\begin{proof}
+The two pre-final sets $N_0,N_1$ are internally repetition-free and mutually disjoint.  Each has size $\tau_b$.  The final phase cylinders $A_0,A_1$ each have size $P$ and are disjoint because $f_0\ne f_1$.  They are also disjoint from $N_0\cup N_1$, since every state appearing in a pre-final set is nonfinal while $f_0,f_1\in F$.  Hence $Q\times\{0,\ldots,P-1\}$ contains at least
+\[
+|N_0|+|N_1|+|A_0|+|A_1|=\tau_0+\tau_1+2P
+\]
+distinct augmented pairs.
+\end{proof}
+
+\section{A sum-waiting lemma on split cycles}
+
+We make explicit the locality fact used below; it is the phase-aware version of the standard synchronous radius bound and is also used in~\cite{yonezu2026statephase}.
+
+\begin{lemma}[Phase-aware radius locality]
+Fix $P$ and a deterministic period-$P$ algorithm on a static graph.  After $t\ge0$ propagation rounds, the persistent state of a node $v$ is determined by the initial states within graph distance at most $t$ from $v$, together with the common phase prefix $\phi_0,\ldots,\phi_{t-1}$.  Consequently, if two executions have identical radius-$t$ initial neighborhoods around their respective distinguished nodes, then those nodes have identical persistent states at time $t$.
+\end{lemma}
+
+\begin{proof}
+Induct on $t$.  At $t=0$, the persistent state is determined by the node's own initial state.  Suppose the claim holds after $t$ rounds.  In round $t$, the next state of $v$ is a deterministic function of its current state, the common phase $\phi_t$, and the multiset counts of the one-bit messages sent by its neighbors.  By the induction hypothesis, each neighbor's current state, and hence its round-$t$ broadcast, is determined by initial states within distance at most $t$ of that neighbor.  Their union lies within distance at most $t+1$ of $v$.  Therefore the state of $v$ at time $t+1$ is determined by its radius-$(t+1)$ initial neighborhood and the phase prefix through $\phi_t$.
+\end{proof}
+
+\begin{lemma}[Adaptive split on $C_{2D}$]
+For $D\ge2$, let $\tau_0,\tau_1$ be the first final times of the two homogeneous executions on $C_{2D}$.  Then
+\[
+\tau_0+\tau_1\ge D.
+\]
+\end{lemma}
+
+\begin{proof}
+Assume $\tau_0+\tau_1\le D-1$.  Give a contiguous block of
+\[
+L_0=2\tau_0+1
+\]
+cycle vertices input zero and give all remaining vertices input one.  The one-block length is
+\[
+L_1=2D-L_0\ge2\tau_1+1.
+\]
+Choose a center $u$ of the zero block.  Its distance from the one block is $\tau_0+1$, so its radius-$\tau_0$ initial neighborhood is all zero.  Choose a deepest vertex $v$ of the one block; its distance from the zero block is at least $\tau_1+1$, so its radius-$\tau_1$ initial neighborhood is all one.
+
+By the phase-aware radius-locality lemma, $u$ follows its all-zero homogeneous history through time $\tau_0$ and therefore enters an immutable final state with output zero.  Likewise, $v$ enters an immutable final state with output one by time $\tau_1$.  The two decisions coexist in the same execution, contradicting agreement.
+\end{proof}
+
+\begin{lemma}[The case $D=1$]
+On $K_2$, the homogeneous first-final times satisfy $\tau_0+\tau_1\ge1$.
+\end{lemma}
+
+\begin{proof}
+If $\tau_0=\tau_1=0$, then both input values initialize directly into their respective immutable final states.  On the mixed-input $K_2$, the two nodes therefore begin with opposite immutable outputs, violating agreement.
+\end{proof}
+
+\section{Exact state complexity for known dynamic diameter}
+
+\begin{theorem}[Exact known-diameter state complexity]
+For every $D\ge1$ and $P\ge1$,
+\[
+\boxed{S_D(D,P)=\left\lceil\frac{D}{P}\right\rceil+2.}
+\]
+\end{theorem}
+
+\begin{proof}
+For the lower bound, use $C_{2D}$ when $D\ge2$ and $K_2$ when $D=1$.  These are admissible static networks of dynamic diameter exactly $D$.  The sum-waiting lemmas give
+\[
+\tau_0+\tau_1\ge D.
+\]
+Two-orbit packing therefore yields
+\[
+P|Q|\ge D+2P,
+\]
+so
+\[
+|Q|\ge 2+\left\lceil\frac{D}{P}\right\rceil.
+\]
+
+For the upper bound, use the block-counter algorithm of~\cite{yonezu2026statephase}.  A zero-input node immediately enters an absorbing final-zero state and continues broadcasting zero.  A one-input node remains live while storing only the number of completed phase periods.  Dynamic diameter at most $D$ guarantees that an initial zero reaches every node within $D$ propagation rounds.  With $B=\lceil D/P\rceil$, the persistent states are
+\[
+\{\finalzero,\live_0,\ldots,\live_{B-1},\finalone\},
+\]
+for a total of $B+2=\lceil D/P\rceil+2$ states.  On the last propagation round, hearing zero has priority over timing out to final one.  Thus the lower and upper bounds match.
+\end{proof}
+
+\begin{corollary}[Exact persistent-bit complexity]
+For every $D,P\ge1$,
+\[
+M_D(D,P)=
+\left\lceil
+\log_2\!\left(\left\lceil\frac{D}{P}\right\rceil+2\right)
+\right\rceil.
+\]
+\end{corollary}
+
+\begin{corollary}[Exact feasible state--phase region]
+Fix $D\ge1$ and an integer state budget $S\ge3$.  There exists a correct algorithm with at most $S$ persistent states if and only if
+\[
+\boxed{P(S-2)\ge D.}
+\]
+Equivalently, the minimum phase period permitting an $S$-state solution is
+\[
+\boxed{P_{\min}(D,S)=\left\lceil\frac{D}{S-2}\right\rceil.}
+\]
+\end{corollary}
+
+\begin{proof}
+By the exact theorem, $S_D(D,P)\le S$ iff $\lceil D/P\rceil+2\le S$.  Since $S-2$ is an integer, this is equivalent to $D/P\le S-2$, hence to $D\le P(S-2)$.
+\end{proof}
+
+\begin{corollary}[Exact three-state threshold]
+For every $D\ge1$,
+\[
+S_D(D,P)=3
+\quad\Longleftrightarrow\quad
+P\ge D.
+\]
+\end{corollary}
+
+\section{A sharper known-size lower bound}
+
+The same packing principle strengthens the known-size result even though it does not close the remaining gap.
+
+\begin{lemma}[Adaptive split on $C_n$]
+For $n\ge4$, let $\tau_0,\tau_1$ be the homogeneous first-final times on $C_n$.  Then
+\[
+\tau_0+\tau_1\ge \left\lfloor\frac{n}{2}\right\rfloor.
+\]
+\end{lemma}
+
+\begin{proof}
+Assume instead that
+\[
+\tau_0+\tau_1\le \left\lfloor\frac{n}{2}\right\rfloor-1.
+\]
+Assign zero to a contiguous block of $L_0=2\tau_0+1$ vertices and one to the remaining $L_1=n-L_0$ vertices.  The assumed inequality gives
+\[
+L_1\ge2\tau_1+1.
+\]
+Each block therefore contains a vertex whose radius-$\tau_b$ neighborhood is homogeneous in value $b$.  The phase-aware radius-locality lemma forces those two vertices to reproduce opposite homogeneous final decisions, contradicting agreement.
+\end{proof}
+
+\begin{theorem}[Improved known-size state bounds]
+For every $n\ge4$ and $P\ge1$,
+\[
+\boxed{
+2+\left\lceil\frac{\lfloor n/2\rfloor}{P}\right\rceil
+\le S_n(n,P)
+\le
+2+\left\lceil\frac{n-1}{P}\right\rceil.
+}
+\]
+\end{theorem}
+
+\begin{proof}
+The lower bound follows from the adaptive split lemma and two-orbit packing on $C_n$:
+\[
+P|Q|\ge \left\lfloor\frac{n}{2}\right\rfloor+2P.
+\]
+The upper bound is the known monotone-flooding block counter with horizon $n-1$~\cite{yonezu2026statephase}.
+\end{proof}
+
+\begin{remark}
+At $P=1$, the new lower bound is $S_n(n,1)\ge\lfloor n/2\rfloor+2$, compared with the previous split-cycle lower bound of order $n/4$.  Determining the exact known-size state complexity remains open in this note.
+\end{remark}
+
+\section{Why the extra \texorpdfstring{$2P$}{2P} is essential}
+
+The exact known-$D$ theorem is not obtained merely by replacing a maximum waiting time with a sum.  The persistent state count has two irreducible absorbing-state costs.  In augmented state space, each final persistent state sweeps through all $P$ phase values after termination.  Thus the two opposite unanimity outputs reserve $2P$ augmented pairs.  The remaining $|Q|-2$ persistent states can account for at most $P(|Q|-2)$ distinct pre-final phase/state pairs.  The diameter witness forces at least $D$ such pre-final pairs across the two opposite homogeneous executions.  This is precisely the inequality
+\[
+P(|Q|-2)\ge D.
+\]
+The upper construction meets it with equality at the level of integer ceilings.
+
+This interpretation also explains the inverse law.  The two final states are a fixed state tax imposed by two-output explicit termination.  Every additional persistent state supplies exactly one more period, or $P$ rounds, of distinguishable waiting capacity in the optimal diameter-aware construction.
+
+\section{Relation to prior work}
+
+The direct predecessor is the state--phase tradeoff analysis in~\cite{yonezu2026statephase}, which introduced the free modulo-$P$ phase model for this task, proved the block-counter upper bound, and established asymptotically matching lower bounds.  The present note changes the lower-bound accounting: it couples the two opposite homogeneous executions and counts their absorbing phase cylinders, yielding an exact result for known $D$ and a stronger known-$n$ bound.
+
+Parzych and Daymude~\cite{parzych2026} prove logarithmic memory lower bounds for terminating anonymous dynamic broadcast, establishing that termination memory is a genuine resource in nearby models.  Turau~\cite{turau2026} gives a randomized broadcast algorithm with stabilizing termination using $O(\log\log n)$ bits per node in anonymous synchronous $1$-interval-connected dynamic networks; the task, randomization, start semantics, and asymptotic memory objective differ from the deterministic exact consensus-state question here.  Blanc, Di Luna, and Viglietta~\cite{blanc2026} show that rich computation remains possible under one-bit broadcast-counting communication.  Di Luna and Viglietta~\cite{diluna2026} study finite-state and self-stabilizing computation in anonymous dynamic networks.
+
+The broad idea of combining a short clock with local storage is older and is not claimed here.  Lenzen et al.~\cite{lenzen2013} explicitly combine a synchronized short clock with local round-label storage in a fault-tolerant global-time construction.  Charron-Bost and Penet de Monterno study modulo-clock synchronization in dynamic networks~\cite{charron2023} and later bounded-memory lower bounds for clock synchronization under arbitrary starts~\cite{charron2024bounded}.  Their task is to create or synchronize the clock itself, whereas the present model supplies the globally aligned phase $t\bmod P$ for free and measures the additional persistent state needed for explicitly terminating binary consensus.  Bazzi et al.~\cite{bazzi2025} construct a deterministic synchronizer for anonymous networks under arbitrary dynamics using an extended Pull model with a one-bit multi-writer atomic register at each edge-port; this is a different communication model and synchronization objective.  Aspnes~\cite{aspnes2021} studies clocked population protocols, and Mayo and Kearns~\cite{mayo1994} study termination detection with roughly synchronized physical clocks.
+
+A targeted literature search through September 5, 2026 did not identify a prior theorem giving the exact formula $S_D(D,P)=\lceil D/P\rceil+2$, or the equivalent feasibility law $P(S-2)\ge D$, for the stated anonymous dynamic binary-consensus model.  This is a scoped literature-screening statement, not a certification of novelty.
+
+\section{Claim boundary and limitations}
+
+The paper does not claim novelty for finite-state pumping, disjoint deterministic trajectories in general, static-cycle locality, monotone flooding, dynamic-diameter definitions, periodic clocks, or generic time--space tradeoffs.  The claimed contribution is the task-specific combination that yields the exact persistent-state characterization above.
+
+The theorem assumes deterministic anonymous synchronous leaderless $1$-interval-connected dynamic networks, a free globally aligned period-$P$ phase, finality and output encoded in persistent state rather than phase, final nodes remaining present in communication, and the one-bit broadcast-counting upper-bound model.  Randomization, identifiers, leaders, Byzantine faults, asynchronous communication, and alternative disappearance-on-finalization semantics are outside scope.
+
+The exact lower bound itself uses only static cycles (and $K_2$ for $D=1$), so it does not rely on a time-varying adversarial topology schedule or on the one-bit message restriction.  The one-bit restriction is relevant to the simple matching upper construction.
+
+\section{Conclusion}
+
+Opposite unanimous executions contain more state-complexity information than either trajectory alone.  By adapting the split witness to their two first-final times and packing both augmented orbits together with the two absorbing phase cylinders, the known-diameter state--phase tradeoff becomes exact:
+\[
+S_D(D,P)=\left\lceil\frac{D}{P}\right\rceil+2.
+\]
+Equivalently, the exact feasible region is $P(S-2)\ge D$.  The three-state regime therefore begins exactly at $P=D$, not merely by a sufficient upper-bound construction.
+
+The same argument improves the known-size lower bound to $2+\lceil\lfloor n/2\rfloor/P\rceil$.  Closing the remaining known-size gap is the natural residual problem.
+
+\begin{thebibliography}{99}
+
+\bibitem{yonezu2026statephase}
+R. Yonezu,
+``Internal Time as Local Memory: State--Phase Tradeoffs for Explicit Termination in Anonymous Dynamic Binary Consensus,''
+Zenodo preprint, version 2.0.0, September 2, 2026.
+DOI: \href{https://doi.org/10.5281/zenodo.22228873}{10.5281/zenodo.22228873}.
+
+\bibitem{blanc2026}
+T. Blanc, G. A. Di Luna, and G. Viglietta,
+``Computing in Anonymous Dynamic Networks with One-Bit Communications,''
+arXiv:2607.08358, 2026.
+
+\bibitem{parzych2026}
+G. Parzych and J. J. Daymude,
+``Memory Lower Bounds and Impossibility Results for Anonymous Dynamic Broadcast,''
+\emph{Distributed Computing}, vol. 39, no. 3, Art. 18, 2026.
+DOI: 10.1007/s00446-026-00511-4.
+
+\bibitem{turau2026}
+V. Turau,
+``Broadcasts in Anonymous, Dynamic Networks: A New Algorithm and Impossibility Results,''
+in \emph{5th Symposium on Algorithmic Foundations of Dynamic Networks (SAND 2026)}, LIPIcs 373, Art. 6, 2026.
+DOI: 10.4230/LIPIcs.SAND.2026.6.
+
+\bibitem{diluna2026}
+G. A. Di Luna and G. Viglietta,
+``Universal Finite-State and Self-Stabilizing Computation in Anonymous Dynamic Networks,''
+\emph{Theoretical Computer Science}, vol. 1085, Art. 116187, 2026.
+DOI: 10.1016/j.tcs.2026.116187.
+
+\bibitem{lenzen2013}
+C. Lenzen, M. F\"ugger, M. Hofst\"atter, and U. Schmid,
+``Efficient Construction of Global Time in SoCs Despite Arbitrary Faults,''
+in \emph{2013 Euromicro Conference on Digital System Design}, pp. 142--151, 2013.
+DOI: 10.1109/DSD.2013.97.
+
+\bibitem{charron2023}
+B. Charron-Bost and L. Penet de Monterno,
+``Self-Stabilizing Clock Synchronization in Dynamic Networks,''
+in \emph{OPODIS 2022}, LIPIcs 253, Art. 28, 2023.
+DOI: 10.4230/LIPIcs.OPODIS.2022.28.
+
+\bibitem{charron2024bounded}
+B. Charron-Bost and L. Penet de Monterno,
+``Clock Synchronization Is Almost Impossible with Bounded Memory,''
+arXiv:2411.10289, 2024.
+
+\bibitem{bazzi2025}
+R. Bazzi, A. Chaturvedi, A. W. Richa, and P. Vargas,
+``Brief Announcement: Synchronization in Anonymous Networks Under Arbitrary Dynamics,''
+in \emph{39th International Symposium on Distributed Computing (DISC 2025)}, LIPIcs 356, Art. 49, 2025.
+DOI: 10.4230/LIPIcs.DISC.2025.49.
+
+\bibitem{aspnes2021}
+J. Aspnes,
+``Clocked Population Protocols,''
+\emph{Journal of Computer and System Sciences}, vol. 121, pp. 34--48, 2021.
+DOI: 10.1016/j.jcss.2021.05.001.
+
+\bibitem{mayo1994}
+J. Mayo and P. Kearns,
+``Distributed Termination Detection with Roughly Synchronized Clocks,''
+\emph{Information Processing Letters}, vol. 52, no. 2, pp. 105--108, 1994.
+DOI: 10.1016/0020-0190(94)00129-4.
+
+\end{thebibliography}
+
+\end{document}

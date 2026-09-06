@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the preprint via the preferred citation below."
+title: "Two-Orbit Packing State-Complexity Source and Audit Package"
+type: software
+authors:
+  - family-names: "Yonezu"
+    given-names: "Ryutaro"
+    affiliation: "Independent Researcher"
+version: "1.0.0"
+date-released: "2026-09-06"
+repository-code: "https://github.com/yonezaemon1-hub/two-orbit-packing-state-complexity"
+license: MIT
+abstract: >-
+  Source and arithmetic-audit materials for the paper Two-Orbit Packing for
+  Exact State Complexity of Explicit Binary Consensus in Anonymous Dynamic
+  Networks with Periodic Time.
+keywords:
+  - anonymous dynamic networks
+  - binary consensus
+  - explicit termination
+  - state complexity
+  - periodic time
+  - local memory
+  - dynamic diameter
+preferred-citation:
+  type: article
+  title: "Two-Orbit Packing for Exact State Complexity of Explicit Binary Consensus in Anonymous Dynamic Networks with Periodic Time"
+  authors:
+    - family-names: "Yonezu"
+      given-names: "Ryutaro"
+      affiliation: "Independent Researcher"
+  year: 2026

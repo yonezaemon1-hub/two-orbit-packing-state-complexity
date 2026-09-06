@@ -1,0 +1,26 @@
+{
+  "title": "Two-Orbit Packing for Exact State Complexity of Explicit Binary Consensus in Anonymous Dynamic Networks with Periodic Time",
+  "creator": "Yonezu, Ryutaro",
+  "affiliation": "Independent Researcher",
+  "resource_type": "Publication / Preprint",
+  "version": "v1.0.0",
+  "manuscript_date": "2026-09-05",
+  "public_release_date": "2026-09-06",
+  "license": "CC BY 4.0",
+  "paper_doi": "PENDING",
+  "software_doi": "PENDING",
+  "github": "https://github.com/yonezaemon1-hub/two-orbit-packing-state-complexity",
+  "related_work_doi": "10.5281/zenodo.22228873",
+  "keywords": [
+    "anonymous dynamic networks",
+    "binary consensus",
+    "explicit termination",
+    "state complexity",
+    "local memory",
+    "periodic clock",
+    "dynamic diameter",
+    "finite-state lower bounds",
+    "time-space tradeoff"
+  ],
+  "description": "We study deterministic binary consensus with explicit termination in anonymous synchronous 1-interval-connected dynamic networks under one-bit broadcast-counting communication with a free globally aligned phase phi_t=t mod P. For known dynamic diameter D and unknown network size, we prove the exact persistent-state complexity S_D(D,P)=ceil(D/P)+2, equivalently P(S-2)>=D. The three-state threshold is exactly P>=D. The same two-orbit packing argument strengthens the known-size lower bound to 2+ceil(floor(n/2)/P). The preprint is not peer reviewed."
+}
