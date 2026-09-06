@@ -7,8 +7,9 @@
   "manuscript_date": "2026-09-05",
   "public_release_date": "2026-09-06",
   "license": "CC BY 4.0",
-  "paper_doi": "PENDING",
-  "software_doi": "PENDING",
+  "paper_doi": "10.5281/zenodo.22538052",
+  "all_versions_doi": "10.5281/zenodo.22538051",
+  "software_doi": "10.5281/zenodo.22538011",
   "github": "https://github.com/yonezaemon1-hub/two-orbit-packing-state-complexity",
   "related_work_doi": "10.5281/zenodo.22228873",
   "keywords": [
