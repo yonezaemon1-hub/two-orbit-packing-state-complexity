@@ -76,12 +76,12 @@ No novelty is claimed for generic finite-state pumping, periodic clocks, static-
 - `audit/audit_formula.py` — finite arithmetic/off-by-one sanity checks for the theorem corollaries and split inequalities.
 - `audit/audit_output.txt` — output of the included audit script.
 - `PRIOR_ART_AUDIT.md` — scoped related-work/claim-boundary note.
-- `CITATION.cff` — citation metadata; DOI fields should be filled after Zenodo publication.
-- `.zenodo.json` — metadata for a software/source-package Zenodo release.
-- `paper.publish.json` — paper-deposit metadata checklist for manual Zenodo entry.
+- `CITATION.cff` — citation metadata with the published paper DOI.
+- `.zenodo.json` — metadata for the software/source-package Zenodo release.
+- `paper.publish.json` — paper-deposit metadata with published identifiers.
 - `LICENSE` — MIT license for scripts/source-package utilities.
 - `LICENSE_PAPER.txt` — CC BY 4.0 notice for the manuscript text/PDF.
-- `SHA256SUMS.txt` — integrity manifest.
+- `SHA256SUMS.txt` — integrity manifest for the v1.0.0 release package.
 
 ## Reproduction
 
@@ -108,7 +108,6 @@ Paper DOI: `10.5281/zenodo.22228873`
 
 ## DOI
 
-Paper DOI: **pending**  
-Software/source-package DOI: **pending**
-
-These fields should be backfilled after the Zenodo records are published.
+Paper DOI: `10.5281/zenodo.22538052`  
+All-versions paper DOI: `10.5281/zenodo.22538051`  
+Software/source-package DOI: `10.5281/zenodo.22538011`
