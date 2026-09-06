@@ -9,6 +9,7 @@ authors:
 version: "1.0.0"
 date-released: "2026-09-06"
 repository-code: "https://github.com/yonezaemon1-hub/two-orbit-packing-state-complexity"
+doi: "10.5281/zenodo.22538011"
 license: MIT
 abstract: >-
   Source and arithmetic-audit materials for the paper Two-Orbit Packing for
@@ -30,3 +31,4 @@ preferred-citation:
       given-names: "Ryutaro"
       affiliation: "Independent Researcher"
   year: 2026
+  doi: "10.5281/zenodo.22538052"
