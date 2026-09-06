@@ -1,0 +1,28 @@
+{
+  "creators": [
+    {
+      "affiliation": "Independent Researcher",
+      "name": "Yonezu, Ryutaro"
+    }
+  ],
+  "title": "Two-Orbit Packing for Exact State Complexity - source and audit package",
+  "version": "v1.0.0",
+  "access_right": "open",
+  "license": "mit",
+  "upload_type": "software",
+  "keywords": [
+    "anonymous dynamic networks",
+    "binary consensus",
+    "explicit termination",
+    "state complexity",
+    "periodic time",
+    "local memory",
+    "dynamic diameter"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.22228873",
+      "relation": "references"
+    }
+  ]
+}
