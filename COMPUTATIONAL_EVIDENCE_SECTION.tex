@@ -1,0 +1,24 @@
+\section{Computational evidence}\label{sec:computational-evidence}
+
+The exact characterization is proved analytically.  We additionally include a finite arithmetic audit to make the threshold structure and known-size residual gap directly inspectable.  The existing script \texttt{audit/audit\_formula.py} checks theorem corollaries and split inequalities; the companion \texttt{audit/computational\_evidence.py} exports a wider finite table.
+
+For the known-diameter theorem, the exact formula gives the following representative values.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{c|rrrr}
+$D=8$ & $P=1$ & $P=2$ & $P=4$ & $P=8$ \\
+\hline
+$S_D(D,P)$ & 10 & 6 & 4 & 3
+\end{tabular}
+\caption{Finite evaluation of $S_D(D,P)=\lceil D/P\rceil+2$ at $D=8$.  The three-state threshold occurs exactly at $P=D$.}
+\label{tab:two-orbit-finite}
+\end{table}
+
+Across the audited grid the script verifies both $P(S_D-2)\ge D$ and the minimality condition $P(S_D-3)<D$ whenever $S_D>3$.  It separately records the known-size lower/upper interval
+\[
+2+\left\lceil\frac{\lfloor n/2\rfloor}{P}\right\rceil
+\le S_n(n,P)\le
+2+\left\lceil\frac{n-1}{P}\right\rceil,
+\]
+so the remaining finite gap is visible rather than hidden by asymptotic notation.  These checks are computational evidence only and are not used in the proof of the exact known-diameter result.
